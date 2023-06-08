@@ -1,0 +1,125 @@
+﻿@using LibraryDatabaseCoffe.Models.DB.Tables
+@model List<SStaffViewModel>
+
+<div id="TopInfo">
+    <img src="" class="c"/>
+</div>
+<div class="pt-5 container-fluid">
+    <div class="my-4 px-4 h2 text-center text-md-start row-cols-md-12 my-sm-5">Сладости</div>
+    <div>
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+            @foreach (var item in Model)
+            {
+                <div class="px-1-sm" method="post">
+                    <div class="card shadow-sm mx-4 my-sm-3">
+                        <img src='@{
+                            string path = Directory.GetCurrentDirectory() + "/wwwroot/imgs/Staffs/"+ item.StaffName + ".png";
+                            var checkFile = File.Exists(path);
+                            if(checkFile)
+                                Write(Url.Content("~/imgs/Staffs/"+ item.StaffName + ".png"));
+                            else
+                                Write(Url.Content("https://avatars.mds.yandex.net/i?id=1b2d704a6659481cd6a6f2f850be3d326323d45f-6946731-images-thumbs&n=13"));
+                        }'
+                             class="w-100" alt="..." style="width: 220px; height: 190px;">
+                        <div class="card-body">
+                            <ng-view class="card-text">Название: @item.StaffName</ng-view>
+                            <p class="card-text">Классификация: @item.Classification</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="btn-group">
+                                    <a type="submit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary" asp-controller="Home" asp-action="Product">Добавить</a>
+                                </div>
+                                <label class="text-muted">@item.Price рб</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<div id="CarouselTopInfo" class="carousel slide mt-lg-5 m-auto CaruselScale" data-bs-ride="carousel">
+    <div class="carousel-indicators">
+        <button type="button" data-bs-target="#CarouselTopInfo" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+        <button type="button" data-bs-target="#CarouselTopInfo" data-bs-slide-to="1" aria-label="Slide 2"></button>
+        <button type="button" data-bs-target="#CarouselTopInfo" data-bs-slide-to="2" aria-label="Slide 3"></button>
+    </div>
+    <div class="carousel-inner">
+        <div class="carousel-item active">
+            <img src="https://get.wallhere.com/photo/4816x3456-px-cupcakes-desserts-food-orange-fruit-sprinkles-1209703.jpg" style="object-fit: fill; width: 100%; height: 100%;" class="rounded-3" alt="...">
+            <div class="carousel-caption d-sm-block fs-4">
+                <h4>Наши лучшие работы</h4><!-- TODO Zoom text-->
+            </div>
+        </div>
+        <div class="carousel-item">
+            <img src="https://o-tendencii.com/uploads/posts/2022-02/1645891371_37-o-tendencii-com-p-ochen-krasivie-pirozhnie-foto-40.jpg" style="object-fit: fill; width: 100%; height: 100%;" class="container-lg rounded-3" alt="...">
+            <div class="carousel-caption d-none d-sm-block">
+                <h4>Наши лучшие работы</h4><!-- TODO Zoom text-->
+            </div>
+        </div>
+        <div class="carousel-item">
+            <img src="https://files.wallpaperpass.com/2019/10/food%20wallpaper%20108%20-%206668x4992.jpg" style="object-fit: fill; width: 100%; height: 100%;" class="container-lg rounded-3" alt="...">
+            <div class="carousel-caption d-none d-sm-block">
+                <h4>Наши лучшие работы</h4><!-- TODO Zoom text-->
+            </div>
+        </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#CarouselTopInfo" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Назад</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#CarouselTopInfo" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Вперед</span>
+    </button>
+</div>
+
+<div class="container-lg text-wrap h2 text-center" style="margin-top: 8rem;">
+    Выберите свой идеальный торт для своего идеального дня
+</div>
+<div class="container overflow-hidden mt-lg-4" style="width: 100%;">
+    <div class="row gx-5 gy-lg-5 pt-4 pt-lg-5">
+        <div class="col-6 col-lg-7 align-self-center justify-content-center p-lg-5 py-lg-0 ms-lg-3 CardZoom">
+            <div class="border border-white border-lg p-2 ShowLg">
+                <img src="https://krot.info/uploads/posts/2022-06/thumbs/1655908594_46-krot-info-p-otkritka-kheppi-bezdei-krasivie-46.jpg" class="w-100"  alt="...">
+            </div>
+            <p id='Bithday' class="text-center fs-3">День рождения</p>
+        </div>
+        <div class="col-6 col-lg-12 align-items-center justify-content-center top-100 mt-lg-0 mx-lg-1 d-lg-none d-xl-none d-xxl-none CardZoom">
+            <div class="border border-white border-1 p-2 ShowLg">
+                <img src="https://o-tendencii.com/uploads/posts/2022-03/1646082513_45-o-tendencii-com-p-prazdnichnii-tort-na-den-rozhdeniya-foto-49.jpg" class="w-100"  alt="...">
+            </div>
+            <p id='Wedding' class="text-center fs-3">Свадьба</p>
+        </div>
+        <div class="col-lg-4">
+            <div class="col-6 col-lg-12 align-items-center justify-content-center top-100 mt-lg-0 mx-lg-1 d-none d-lg-block CardZoom">
+                <div class="border border-white border-1 p-2 ShowLg">
+                    <img src="https://o-tendencii.com/uploads/posts/2022-03/1646143443_44-o-tendencii-com-p-torti-na-svadbu-krasivie-foto-45.jpg" class="w-100"  alt="...">
+                </div>
+                <p id='Wedding' class="text-center fs-3">Свадьба</p>
+            </div>
+            <div class="col-12 col-lg-9 mt-lg-2 py-lg-5 mx-lg-3 pb-lg-0 align-items-center justify-content-center CardZoom">
+                <div class="border border-white border-1 p-2 ShowLg">
+                    <img src="https://novyjgod.com/wp-content/uploads/2018/11/christmas-cakes-new-year-sweet-novyi-god-tort-ukrashenie-kre.jpg" class="w-100"  alt="...">
+                </div>
+                <p id='NewYear' class="text-center fs-1">Новый год</p>
+            </div>
+        </div>
+    </div>
+    <div class="row gx-5 gy-5">
+        <div class="col-6 col-lg-4 align-self-center align-items-center justify-content-center px-lg-5 mx-lg-5 pb-lg-5 mt-lg-2 CardZoom">
+            <div class="border border-white border-1 p-2 ShowLg">
+                <img src="https://o-tendencii.com/uploads/posts/2022-02/1645875829_2-o-tendencii-com-p-tort-na-paskhu-foto-2.jpg" class="w-100"  alt="...">
+            </div>
+            <p id='Easter' class="text-center fs-3">Пасха</p>
+        </div>
+        <div class="col-6 col-lg-3 align-self-center align-items-center justify-content-center mb-lg-5 mx-lg-5 pt-lg-2 CardZoom">
+            <div class="border border-white border-1 p-2 ShowLg">
+                <img src="https://100kupon.ru/assets/gallery/192/2311.jpg" class="w-100"  alt="...">
+            </div>
+            <p id='Marchth' class="text-center fs-3">8 марта</p>
+        </div>
+    </div>
+</div>
+
+
+

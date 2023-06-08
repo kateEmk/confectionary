@@ -1,0 +1,67 @@
+﻿@using Confectionery.ViewModels
+@model UserViewModel
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" asp-append-version="true" />
+</head>
+<body>
+   <section id="SectionOrders">
+        <div class="card mt-5" style="border-radius: 15px;">
+          <div class="card-body p-4">
+            <div class="d-flex text-black">
+              <div class="flex-shrink-0 row col-1">
+                <img src="https://cdn2.iconfinder.com/data/icons/social-media-flat-line/70/user-1024.png"
+                  alt="Generic placeholder image" class="img-fluid row col-12 m-0 p-0"
+                  style="width: 100px; border-radius: 10px;">
+                <a type="submit" asp-controller="User" asp-action="LogOut" class="btn col-12 text-center btn-outline-danger mt-3 p-0" style="width: 100px">Выйти из аккаунта</a>
+              </div>
+              <div class="flex-grow-1 ms-5 mt-3 col-10">
+                <h5 class="mb-1 mt-3">Имя: @Model.AccountView.Name</h5>
+                <p class="mb-2 pb-1 mt-3">Электронная почта: @Model.AccountView.Email</p>
+                <div class="d-flex justify-content-start rounded-3 p-2" style="background-color: #efefef;">
+                  <div>
+                    <p class="small text-muted mb-1">Количество заказов: @Model.Orders.Count</p>
+                  </div>
+                  <div class="px-3">
+                    <p class="small text-muted mb-1">Всего потрачено: @Model.AccountView.Total рб</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        @foreach (var order in Model.Orders)
+        {
+            <div class="card rounded-3 mb-5 mt-4">
+              <div class="card-body p-4">
+                <div class="row d-flex justify-content-between align-items-center">
+                  <div class="col-md-2 col-lg-2 col-xl-2">
+                    <img
+                  src='@Url.Content("~/imgs/Order_picture.png")'
+                  class="img-fluid rounded-3" alt="Cotton T-shirt">
+                  </div>
+                  <div class="col-md-3 col-lg-3 col-xl-3">
+                        <p class="lead fw-normal mb-2">Номер заказа: @order.Number</p>
+                        <p>
+                            <span class="text-muted">Статус заказа: </span>@order.ToStringStatus()<br>
+                            <span class="text-muted">Дата получения заказа: </span>@if (order.DateGives != default) Write(order.DateGives); else Write("Дата получения не назначена");
+                        </p>
+                  </div>
+                  <div class="col-md-3 col-lg-3 col-xl-2 d-flex">
+                    <div class="col-12">
+                        <div class="col-12 m-auto text-center fs-6">Товары</div>
+                        <input name="quantity" height="2" disabled value="@string.Join(' ',order.Staffs.Select(x =>$"Товар: '{x.Key}' кол-во - {x.Value};"))" type="text" class="form-control form-control-sm"/>
+                    </div>
+                  </div>
+                    <div class="col-md-3 col-lg-3 col-xl-3">
+                    <h5 class="mb-0 mt-3 mt-md-0">Стоимость: @order.TotalSpent рб</h5>
+                    </div>
+                </div>
+              </div>
+            </div>
+        }
+</section>
+</body>
+</html>

@@ -1,0 +1,215 @@
+﻿@using Confectionery.ViewModels
+@model CompanyControlViewModel
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" asp-append-version="true" />
+</head>
+<body class="AdminPanel p-0 mb-5">
+    <div class="card mt-5" style="border-radius: 15px;">
+        <div class="card-body p-4">
+            <div class="d-flex text-black">
+                <div class="flex-shrink-0 row col-1">
+                <img src="https://cdn2.iconfinder.com/data/icons/social-media-flat-line/70/user-1024.png"
+                    alt="Generic placeholder image" class="img-fluid row col-12 m-0 p-0"
+                    style="width: 100px; border-radius: 10px;">
+                <a type="submit" asp-controller="User" asp-action="LogOut" class="btn col-12 text-center btn-outline-danger mt-3 p-0" style="width: 100px">Выйти</a>
+                </div>
+                <div class="ms-5 mt-3 col-3 col-lg-2">
+                    <h5 class="mb-1 mt-3">Имя: @Model.User.Name</h5>
+                    <p class="mb-2 pb-1 mt-3">Почта: @Model.User.Email</p>
+                </div>
+                <div class="col-2 mt-3">
+                    <h5 class="mb-1 mt-3">Статус: Админ</h5>
+                </div>
+                <div class="col-2 mt-3">
+                    <a class="h5 mb-1 mt-3 text-decoration-none text-decoration-underline text-black" type="submit" asp-action="PanelCompany" asp-controller="Admin">Компании</a>
+                </div>
+                <div class="col-2 mt-3">
+                    <a class="h5 mb-1 mt-3 text-decoration-none text-black" type="submit" asp-action="PanelSweetStaff" asp-controller="Admin">Десерты</a>
+                </div>
+                <div class="col-2 mt-3">
+                    <a class="h5 mb-1 mt-3 text-decoration-none text-black" type="submit" asp-action="PanelOrder" asp-controller="Admin">Заказы</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <form id="FInfoAddCompany" class="row d-md-flex mt-4">
+        <div class="col-2">
+            <label asp-for="NewCompany.CompanyName" class="form-label"></label>
+            <input type="text" asp-for="NewCompany.CompanyName" placeholder="Название компании" class="form-control">
+            <span asp-validation-for="NewCompany.CompanyName" class="text-danger"></span>
+        </div>
+        <div class="col-2">
+            <label asp-for="NewCompany.Telephone" class="form-label"></label>
+            <input type="text" placeholder="Телефон" asp-for="NewCompany.Telephone" class="form-control">
+            <span asp-validation-for="NewCompany.Telephone" class="text-danger"></span>
+        </div>
+        <div class="col-2">
+            <label asp-for="NewCompany.Owner" class="form-label"></label>
+            <input type="text" placeholder="Имя владельца" asp-for="NewCompany.Owner" class="form-control">
+            <span asp-validation-for="NewCompany.Owner" class="text-danger"></span>
+        </div>
+        <div class="col-2">
+            <label asp-for="NewCompany.BankingAccount" class="form-label"></label>
+            <input type="number" placeholder="Банк. аккаунт" asp-for="NewCompany.BankingAccount" class="form-control">
+            <span asp-validation-for="NewCompany.BankingAccount" class="text-danger"></span>
+        </div>
+        <div class="col-2 d-flex align-items-end">
+            <button id="AddCompany" type="submit" asp-controller="Admin" asp-action="AddCompany" class="btn container btn-success">Добавить</button>
+        </div>
+        <div class="col-2 border-1 border-secondary"></div>
+    </form>
+    <form class="row d-md-flex mt-5">
+        <div class="col-2">
+            <label asp-for="NewCompany.CompanyName" class="form-label"></label>
+            <select id="SelectId" asp-for="NewCompany.CompanyId" class="col-3 form-control">
+                @foreach (var Company in Model.CompanyList){    
+                    <option value="@Company.CompanyId">@Company.CompanyId</option>
+                }
+            </select>
+            <span asp-validation-for="NewCompany.CompanyName" class="text-danger"></span>
+        </div>
+        <div class="col-2">
+            <label asp-for="NewCompany.CompanyName" class="form-label"></label>
+            <input id="CCompanyName" type="text" placeholder="Название компании" asp-for="NewCompany.CompanyName" class="col-3 form-control">
+            <span asp-validation-for="NewCompany.CompanyName" class="text-danger"></span>
+        </div>
+        <div class="col-2">
+            <label asp-for="NewCompany.Telephone" class="form-label"></label>
+            <input id="CTelephone" type="text" placeholder="Телефон" asp-for="NewCompany.Telephone" class="col-3 form-control">
+            <span asp-validation-for="NewCompany.Telephone" class="text-danger"></span>
+        </div>
+        <div class="col-2">
+            <label asp-for="NewCompany.Owner" class="form-label"></label>
+            <input id="COwner" type="text" placeholder="Имя владельца" asp-for="NewCompany.Owner" class="form-control">
+            <span asp-validation-for="NewCompany.Owner" class="text-danger"></span>
+        </div>
+        <div class="col-2">
+            <label asp-for="NewCompany.BankingAccount" class="form-label"></label>
+            <input id="CBankingAccount" type="number" placeholder="Банк. аккаунт" asp-for="NewCompany.BankingAccount" class="col-3 form-control">
+            <span asp-validation-for="NewCompany.BankingAccount" class="text-danger"></span>
+        </div>
+        <div class="col-2 m-0 p-0  d-flex align-items-end">
+            <button type="submit" asp-action="ChangeCompany" asp-controller="Admin" class="btn btn-primary">Изменить</button>
+        </div>
+    </form>
+    <table id="TableCompany" class="table mt-5">
+        <thead>
+            <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Telephone</th>
+                <th scope="col">Name company</th>
+                <th scope="col">Banking account</th>
+                <th scope="col">Name owner</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody id="Etriers">
+        @foreach(var compnay in Model.CompanyList){
+            <tr id=TR"@compnay.CompanyId">
+                <td>@compnay.CompanyId</td>
+                <td>@compnay.Telephone</td>
+                <td>@compnay.CompanyName</td>
+                <td>@compnay.BankingAccount</td>
+                <td>@compnay.Owner</td>
+                <td><a type="submit" class="btn btn-outline-danger col-10" asp-route-IdDeleteCompany="@compnay.CompanyId" asp-controller="Admin" asp-action="DeleteCompany">Удалить</a></td>
+            </tr>        
+        }
+        </tbody>
+    </table>
+</body>
+</html>
+@section pageScripts
+{
+<script>
+    let companys = @Json.Serialize(Model.CompanyList);
+
+    function ClearInputs(){
+        $('#FInfoAddCompany')[0].reset();
+    }
+    function AddCompany(companyId){
+        const formElement = document.querySelector('#FInfoAddCompany');
+        const formData = new FormData(formElement);
+
+        var body = $('#Etriers');
+        var tr = $('<tr>');
+
+        var td = $('<td>');
+        td.text(companyId);
+        tr.append(td);
+        for(var data of formData.entries())
+        {
+            var td = $('<td>');
+            td.text(data[1]);
+            tr.append(td);
+        }
+        var td = $('<td><a type="submit" class="btn btn-outline-danger col-10" asp-route-IdDeleteCompany="${companyId}" asp-controller="Admin" asp-action="DeleteCompany">Delete</a></td>');
+        tr.append(td);
+        body.prepend(tr);
+    }
+    function UpdateAddForms(){
+        var ids = companys.map(row=>[row['companyId']]);
+        let id = Math.max.apply(Math, ids);
+        for (var i=0;i < ids.length;i++){
+                $('<option/>').val(ids[i]).html(ids[i]).appendTo('#SelectId');
+        }
+        AddCompany(id);
+        ClearInputs();
+    }
+    $('#AddCompany').on('click',function(e){
+        e.preventDefault();
+        var _this = $(this);
+        var _form = _this.closest("form");
+
+        _form.validate();
+        var isvalid = _form.valid();
+        if(isvalid){
+            const data = $('#FInfoAddCompany').serialize()
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("AddCompany","Admin")',
+                data:data,
+                dataType: "json",
+                success: function(data){
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Компания добавлена',
+                    })
+                    companys = data.companyList;
+                    UpdateAddForms()
+                },
+                error : function(){
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Ошибка при добавлении',
+                    })
+                    ClearInputs()
+                }
+            });
+        }
+    });
+
+    function search(Key, myArray){
+        for(var obj in myArray){
+            console.log(myArray[obj]);
+            if(myArray[obj].companyId == Key){
+                console.log(myArray[obj]);
+                return myArray[obj];
+            }
+        }
+    }
+    
+    $('#SelectId').on('change', function() {
+        result = $('#SelectId :selected').text();
+
+        obj = search(result,companys);
+
+        $('#CCompanyName').val(obj.companyName);
+        $('#CTelephone').val(obj.telephone);
+        $('#COwner').val(obj.owner);
+        $('#CBankingAccount').val(obj.bankingAccount);
+    });
+</script>
+}

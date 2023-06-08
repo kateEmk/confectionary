@@ -1,0 +1,107 @@
+﻿@using Confectionery.ViewModels
+@model List<BascetViewModel>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" asp-append-version="true" />
+</head>
+<body>
+<form class="h-100 mt-5 mb-5">
+  <div class="h-100 py-5">
+    <div class="row d-flex justify-content-center align-items-center h-100 w-100">
+      <div class="col-10">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h3 class="fw-normal mb-0 text-black">Корзина</h3>
+          @*<div>
+            <p class="mb-0"><span class="text-muted">Отсортировать по:</span> <a href="#!" class="text-body">цене<i class="fas fa-angle-down mt-1"></i></a></p>
+          </div>*@
+        </div>
+        @foreach (var descorder in Model)
+        {
+        <div class="card rounded-3 mb-4">
+          <div class="card-body p-4">
+            <div class="row d-flex justify-content-between align-items-center">
+              <div class="col-md-2 col-lg-2 col-xl-2">
+                <img
+                  src='@{
+                    string path = Directory.GetCurrentDirectory() + "/wwwroot/imgs/Staffs/"+ descorder.StaffName + ".png";
+                    var checkFile = File.Exists(path);
+                    if(checkFile)
+                        Write(Url.Content("~/imgs/Staffs/"+ descorder.StaffName + ".png"));
+                    else 
+                        Write(Url.Content("https://avatars.mds.yandex.net/i?id=d0d7d19e39a3c782c1adde3ec4e3a30160ea1945-5097070-images-thumbs&n=13"));
+                }'
+                  class="img-fluid rounded-3" alt="Cotton T-shirt">
+              </div>
+              <div class="col-md-3 col-lg-3 col-xl-3">
+                    <p class="lead fw-normal mb-2">Название: @descorder.StaffName</p>
+                    <p>
+                        <span class="text-muted">Калории: </span>@descorder.Calories г
+                        <span class="text-muted">Вес: </span>@descorder.Weight г
+                    </p>
+              </div>
+              <div class="col-md-3 col-lg-3 col-xl-2 d-flex">
+                <div class="col-12">
+                    <div class="col-12 m-auto text-center fs-6">Количество</div>
+                    <input min="0" name="quantity" disabled value="@descorder.AmountSweetStaff" type="number" class="form-control form-control-sm"/>
+                </div>
+              </div>
+              <div class="col-md-3 col-lg-3 col-xl-3">
+                <h5 class="mb-0 mt-3 mt-md-0">Стоимость: @{Write(descorder.Price * descorder.AmountSweetStaff);} рб</h5>
+              </div>
+                <div class="text-center d-flex w-100 mt-3 mt-md-0">
+                        <div class="m-auto col-md-4 col-6  h-100">
+                        <a asp-controller="User" asp-action="Bascet" asp-route-id="@descorder.DesciptionId" type="submit" class="btn btn-outline-danger w-100">Отмена</a>
+                    </div>
+                </div>
+            </div>
+          </div>
+        </div>
+        }
+        <div class="card">
+          <div class="card-body row text-center d-flex">
+            <button id="ButtonOrder" type="submit" class="btn btn-warning btn-block btn-lg text-white col-12 col-md-3 col-lg-2 m-auto">Заказать</button>
+            <h5 id='sum_cost'class="col-12 col-md-9 col-lg-10 m-auto mt-2">Общая сумма заказа @Math.Round(Model.Sum(x => x.Price * x.AmountSweetStaff),2) рб</h5>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+</body>
+</html>
+@section pageScripts
+    {
+        <script>
+            $('#ButtonOrder').on('click',function(e){
+
+            var classMatcher = /(?:^|\s)card rounded-3 mb-4(?:\s|$)/;
+            var els = document.getElementsByTagName('*');
+            for (var i=els.length;i--;){
+              if (classMatcher.test(els[i].className)){
+                els[i].parentNode.removeChild(els[i]);
+              }
+            }
+
+            e.preventDefault();
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("AddOrder","User")',
+                success: function(){
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Заказ успешно добавлен',
+                    });
+                    document.getElementById("sum_cost").textContent = "Общая сумма заказа " +  0 + " pб";
+                },
+                error : function(){
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Ошибка при добавлении заказа',
+                    });
+                }
+            });
+        });                            
+        </script>
+};

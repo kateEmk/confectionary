@@ -1,0 +1,25 @@
+﻿@model ErrorViewModel
+@{
+    ViewData["Title"] = "Error";
+}
+
+<h1 class="text-danger">Ошибка.</h1>
+<h2 class="text-danger">При обработке запроса возникла ошибка.</h2>
+
+@if (Model.ShowRequestId)
+{
+    <p>
+        <strong>ID запроса:</strong> <code>@Model.RequestId</code>
+    </p>
+}
+
+<h3>Режим разработчика (Development Mode)</h3>
+<p>
+    Переключение на режим <strong>Разработчика</strong> позволит получить более подробную информацию об ошибке, которая произошла.
+</p>
+<p>
+    <strong>Данный режим не должен быть включен для развернутых приложений.</strong>
+    Это может привести к отображению конфиденциальной информации о пользователях.
+    Для локальной отладки необходимо включить режим <strong>Разработчика</strong>, установив переменную окружения <strong>ASPNETCORE_ENVIRONMENT</strong> в значение <strong>Development</strong>
+    и перезапустить приложение.
+</p>

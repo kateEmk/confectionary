@@ -1,0 +1,139 @@
+﻿@using Confectionery.ViewModels
+@model OrderControllViewModel
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" asp-append-version="true" />
+  <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+</head>
+<body class="AdminPanel p-0 mb-5">
+    <div class="card mt-5" style="border-radius: 15px;">
+        <div class="card-body p-4">
+            <div class="d-flex text-black">
+                <div class="flex-shrink-0 row col-1">
+                <img src="https://cdn2.iconfinder.com/data/icons/social-media-flat-line/70/user-1024.png"
+                    alt="Generic placeholder image" class="img-fluid row col-12 m-0 p-0"
+                    style="width: 100px; border-radius: 10px;">
+                <a type="submit" asp-controller="User" asp-action="LogOut" class="btn col-12 text-center btn-outline-danger mt-3 p-0" style="width: 100px">Log out</a>
+                </div>
+                <div class="ms-5 mt-3 col-3 col-lg-2">
+                    <h5 class="mb-1 mt-3">Имя: @Model.User.Name</h5>
+                    <p class="mb-2 pb-1 mt-3">Электронная почта: @Model.User.Email</p>
+                </div>
+                <div class="col-2 mt-3">
+                    <h5 class="mb-1 mt-3">Статус: Администратор</h5>
+                </div>
+                <div class="col-2 mt-3">
+                    <a class="h5 mb-1 mt-3 text-decoration-none text-black" type="submit" asp-action="PanelCompany" asp-controller="Admin">Компании</a>
+                </div>
+                <div class="col-2 mt-3">
+                    <a class="h5 mb-1 mt-3 text-decoration-none text-black" type="submit" asp-action="PanelSweetStaff" asp-controller="Admin">Десерты</a>
+                </div>
+                <div class="col-2 mt-3">
+                    <a class="h5 mb-1 mt-3 text-decoration-none text-decoration-underline text-black" type="submit" asp-action="PanelOrder" asp-controller="Admin">Заказы</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <form method="post" class="row d-md-flex mt-4" enctype="multipart/form-data">
+        <div class="col-2">
+            <label asp-for="ChangeOrder.OrderId" class="form-label"></label>
+            <select id="CSelectOrderId" asp-for="ChangeOrder.OrderId" class="col-3 form-control">
+                @foreach (var idCompany in Model.Orders.Select(x => x.OrderId))
+                {    
+                    <option value="@idCompany">@idCompany</option>
+                }
+            </select>
+            <span asp-validation-for="ChangeOrder.OrderId" class="text-danger"></span>
+        </div>
+        <div class="col-2">
+            <label asp-for="ChangeOrder.UserId" class="form-label"></label>
+            <input id="CUserId" type="number" disabled class="form-control">
+        </div>
+        <div class="col-2">
+            <label asp-for="ChangeOrder.DateOrder" class="form-label"></label>
+            <input id="CDateOrder" type="date" placeholder="Date order" asp-for="ChangeOrder.DateOrder" class="form-control">
+            <span asp-validation-for="ChangeOrder.DateOrder" class="text-danger"></span>
+        </div>
+        <div class="col-2">
+            <label asp-for="ChangeOrder.Total" class="form-label"></label>
+            <input id="CTotal" type="text" disabled class="form-control">
+        </div>
+        <div class="col-2">
+            <label asp-for="ChangeOrder.StatusOrder" class="form-label"></label>
+            <select id="CStatusOrder" asp-for="ChangeOrder.StatusOrder" class="col-3 form-control">  
+                <option value="-1">Некорректный заказ</option>
+                <option value="0">Ожидание подтверждения</option>
+                <option value="1">Ожидания получения</option>
+                <option value="2">Выполненный заказ</option>
+            </select>
+            <span asp-validation-for="ChangeOrder.StatusOrder" class="text-danger"></span>
+        </div>
+        <div class="col-2 d-flex align-items-end">
+            <button type="submit" asp-controller="Admin" asp-action="ChangeOrder" class="btn container btn-success">Изменить</button>
+        </div>
+    </form>
+    <table id="TableCompany" class="table mt-5">
+        <thead>
+            <tr>
+                <th scope="col">Order id</th>
+                <th scope="col">User id</th>
+                <th scope="col">Date give</th>
+                <th scope="col">Total</th>
+                <th scope="col">Status order</th>
+            </tr>
+        </thead>
+        <tbody id="Etriers">
+            @foreach (var order in Model.Orders)
+            {
+                <tr id=TR"@order.OrderId">
+                    <td>@order.OrderId</td>
+                    <td>@order.UserId</td>
+                    <td>
+                        @{
+                            if (order.DateOrder == default(DateTime)) 
+                                Write("Не назначена"); 
+                            else  
+                                Write(order.DateOrder); 
+                        }
+                    </td>
+                    <td>@order.Total рб</td>
+                    <td>@order.ToStringStatus()</td>
+                </tr>        
+            }
+        </tbody>
+    </table>
+</body>
+</html>
+@section pageScripts
+{
+    <script>
+        let orders = @Json.Serialize(Model.Orders);
+
+        function search(Key, myArray){
+            for(var obj in myArray){
+                if(myArray[obj].orderId == Key){
+                    console.log(myArray[obj]);
+                    return myArray[obj];
+                }
+            }
+        }
+
+         $('#CSelectOrderId').on('change', function() {
+            result = $('#CSelectOrderId :selected').text();
+
+            obj = search(result,orders);
+
+            console.log(obj)
+            $('#CUserId').val(obj.userId);
+            let date = (obj.dateOrder).substring(0, obj.dateOrder.length - (obj.dateOrder.length - 10));
+            console.log(date);
+            if(date == "0001-01-01"){
+                date = "2023-01-01";
+            }
+            $('#CDateOrder').val(date);
+            $('#CTotal').val(obj.total);
+            $('#CStatusOrder').val(obj.statusOrder);
+        });
+    </script>
+}

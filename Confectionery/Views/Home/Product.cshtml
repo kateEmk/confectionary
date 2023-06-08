@@ -1,0 +1,106 @@
+﻿@using Confectionery.ViewModels
+@model DescriptionViewModel
+
+<form id="FInfoProduct" class="text-center">
+    <div class="row m-0 p-0">
+        <div class="col-md-6 jumbotron vertical-center px-0 d-md-flex pe-3">
+            <div class="container px-0 m-md-auto">
+                <img src='@{
+                    string path = Directory.GetCurrentDirectory() + "/wwwroot/imgs/Staffs/"+ Model.Staff.StaffName + ".png";
+                    var checkFile = File.Exists(path);
+                    if(checkFile)
+                        Write(Url.Content("~/imgs/Staffs/"+ Model.Staff.StaffName + ".png"));
+                    else 
+                        Write(Url.Content("https://avatars.mds.yandex.net/i?id=d0d7d19e39a3c782c1adde3ec4e3a30160ea1945-5097070-images-thumbs&n=13"));
+                }'  
+                alt="Kodak Brownie Flash B Camera" class="image-responsive" style="width: 460px; height: 260px;"/>
+            </div>
+        </div>
+        <div class="col-md-6 row mx-0 p-0 my-1">
+            <div class="col-md-12 p-0 mt-3">
+                <h1 class="mt-1">@Model.Staff.StaffName</h1>
+            </div>
+            <div class="col-md-12 p-0 mt-1">
+                Класификация: <a class="btn btn-primary py-0 text-center">@Model.Staff.Classification</a>
+            </div>
+            <div class="col-md-12 p-0 mt-1">
+                Компания: <a class="btn btn-success py-0 text-center">@Model.Staff.Comapny</a>
+            </div>
+            <div class="col-md-12 p-0 mt-1">
+                <div>
+                    Калорийность: @Model.Staff.Calories
+                </div>
+            </div>
+            <div class="col-md-12 p-0 mt-1">
+                <div>Вес: @Model.Staff.Weight г</div>
+            </div>
+            <div class="col-md-12 p-0 mt-1">
+                <div>Цена: @Model.Staff.Price рб</div>
+            </div>
+            <div class="col-12 col-md-6 p-0 mt-1 mb-2">
+                <h1 id="PriceProduct" class="product-price text-center">Общая стоимость 0 рб</h1>
+            </div>
+            <div class="col-12 col-md-6 row p-0 m-0 d-md-flex ps-2">
+                <div class="col-3 p-md-0 m-md-auto">
+                    <label onclick="Decrement(@(Model.Staff.Price.ToString().Replace(',','.')));" class="btn text-center py-3 px-4 m-0 w-100 px-md-3 btn-outline-danger">-</label>
+                </div>
+                <div class="col-6 p-md-0 m-md-auto">
+                    <input asp-for="Count" id="num" onchange="CalculatePrice(@(Model.Staff.Price.ToString().Replace(',','.')))" onkeypress="return (event.charCode >= 48 && event.charCode <= 57 && /^\d{0,3}$/.test(this.value));" class="btn text-center py-3 p-0 w-75 text-center" value="0" type="number"/>
+                    <span asp-validation-for="Count" class="text-danger"></span>
+                </div>
+                <div class="col-3 p-md-0 m-md-auto">
+                    <label onclick="Increment(@(Model.Staff.Price.ToString().Replace(',','.')));" class="btn text-center py-3 px-4 m-0 w-100 px-md-3 btn-outline-success">+</label>
+                </div>
+            </div>
+        </div>
+            <div class="col-md-12 px-0 text-center">
+                <input type = "hidden" asp-for="Id" value="@Model.Staff.StaffId"/>
+                <button id="ButtonAdd" class="text-center btn px-5 w-50 h-75 mt-5 btn-outline-primary">
+                    Добавить в корзину
+                </button>
+
+            </div>
+        <div class="row p-0 m-0 text-center">
+
+        </div>
+    </div>
+</form>
+
+@section pageScripts
+{
+    <script>
+        $('#ButtonAdd').on('click',function(e){
+
+        e.preventDefault();
+        const data = $('#FInfoProduct').serialize()
+        var userAuthorized = @User.Identity.IsAuthenticated.ToString().ToLower();
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("ProductAdd","Home")',
+            data: data,
+            success: function(){
+                if(userAuthorized){
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Товар успешно добавлен',
+                    })
+                    document.getElementById("num").value = 0;
+                    document.getElementById("PriceProduct").textContent = "Общая стоимость " +  0 + " pб";
+                }
+                else{
+                    Swal.fire({
+                        icon: 'question',
+                        title: 'Вы должны войти в аккаунт',
+                    })
+                }
+            },
+            error : function(){
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Произошла ошибка',
+                }) 
+            }
+        });
+    });                            
+    </script>
+}
